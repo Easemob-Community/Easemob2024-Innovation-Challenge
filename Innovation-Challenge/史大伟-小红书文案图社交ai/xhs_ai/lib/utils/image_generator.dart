@@ -14,6 +14,8 @@ class ImageGenerator {
   static const double padding = 20.0;
   static const double fontSize = 40;
   static const double minLineHeight = fontSize * 1.2; // 最小行高
+  static const Color backgroundColor = Color(0xFFFFF8E1); // 浅黄色背景
+  static const Color borderColor = Colors.red; // 红色边框
 
   static Future<void> generateImages(BuildContext context, String title, String content, {OnImageGeneratedCallback? onImageGeneratedCallback}) async {
     if (await _checkAndRequestPermissions()) {
@@ -34,7 +36,11 @@ class ImageGenerator {
     final recorder = ui.PictureRecorder();
     final canvas = ui.Canvas(recorder);
 
-    canvas.drawRect(Rect.fromLTWH(0, 0, width, height), Paint()..color = Colors.white);
+    // 绘制浅黄色背景
+    canvas.drawRect(Rect.fromLTWH(0, 0, width, height), Paint()..color = backgroundColor);
+
+    // 绘制红色边框
+    _drawBorder(canvas);
 
     final textPainter = TextPainter(
       text: TextSpan(
@@ -70,7 +76,12 @@ class ImageGenerator {
     while (lineIndex < lines.length) {
       final recorder = ui.PictureRecorder();
       final canvas = ui.Canvas(recorder);
-      canvas.drawRect(Rect.fromLTWH(0, 0, width, height), Paint()..color = Colors.white);
+
+      // 绘制浅黄色背景
+      canvas.drawRect(Rect.fromLTWH(0, 0, width, height), Paint()..color = backgroundColor);
+
+      // 绘制红色边框
+      _drawBorder(canvas);
 
       double yOffset = padding;
       bool hasContent = false;
@@ -88,11 +99,8 @@ class ImageGenerator {
 
         final lineHeight = textPainter.height.clamp(minLineHeight, double.infinity);
 
-        // 分页检查：至少能容纳一行内容
         if (yOffset + lineHeight > height - padding) {
-          // 新页面至少要能显示一行
           if (!hasContent && lineIndex == 0) {
-            // 异常情况：单行高度超过画布
             throw Exception('Single line exceeds canvas height');
           }
           break;
@@ -111,6 +119,19 @@ class ImageGenerator {
 
     return images;
   }
+
+  // 添加边框绘制方法
+  static void _drawBorder(ui.Canvas canvas) {
+    final borderPaint = Paint()
+      ..color = borderColor
+      ..strokeWidth = 4
+      ..style = PaintingStyle.stroke;
+    canvas.drawRect(
+      Rect.fromLTWH(4, 4, width - 8, height - 8),
+      borderPaint,
+    );
+  }
+
 
   static List<String> _splitContentIntoLines(
       String content,

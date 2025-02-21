@@ -69,6 +69,12 @@
 ![](安装包/img/img3.jpg)
 ![](安装包/img/img4.jpg)
 
+# 有颜色文案生成效果
+
+![](安装包/img/img5.jpg)
+![](安装包/img/img6.jpg)
+![](安装包/img/img7.jpg)
+
 # 代码展示
 
 本项目采用跨平台语言 flutter & dart 开发
